@@ -23,7 +23,7 @@ def add_or_update_user(username):
         twitter_user = TWITTER.get_user(username)
         db_user = (User.query.get(twitter_user.id) or
                    User(id=twitter_user.id, name=username))
-        DB.session.add(db.user)
+        DB.session.add(db_user)
         # Lets get the tweets - focusing on primary (not retweet/reply)
         tweets = twitter_user.timeline(
             count=200, exclude_replies=True, include_rts=False,
@@ -36,7 +36,7 @@ def add_or_update_user(username):
                                                 model='twitter')
             db_tweet = Tweet(id=tweet.id, text=tweet.full_text[:300],
                              embedding=embedding)
-            db.user.tweets.append(db_tweet)
+            db_user.tweets.append(db_tweet)
             DB.session.add(db_tweet)
     except Exception as e:
         print('Error processing {}" {}'.format(username, e))
